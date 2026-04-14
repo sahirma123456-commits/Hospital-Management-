@@ -1,0 +1,83 @@
+<odoo>
+    <record id="appointment_tree_view_id" model="ir.ui.view">
+        <field name="name">appointment.tree.view.id</field>
+        <field name="model">appointment.model</field>
+        <field name="priority" eval="10"/> <!-- Lower sequence number for higher priority -->
+        <field name="arch" type="xml">
+            <tree>
+                <field name="patient_id" string="Patient"/>
+                <field name="doctor_id" string="Doctor"/>
+                <field name="appointment_date"/>
+                <field name="is_fee_pay"/>
+                <field name="state"/>
+                <field name="patient_note"/>
+            </tree>
+        </field>
+    </record>
+    <record id="appointment_doctor_tree_view_id" model="ir.ui.view">
+        <field name="name">appointment.doctor.tree.view.id</field>
+        <field name="model">appointment.model</field>
+        <field name="priority" eval="20"/> <!-- Higher sequence number for lower priority -->
+        <field name="arch" type="xml">
+            <tree>
+                <field name="patient_id" string="Patient"/>
+                <field name="appointment_date"/>
+                <field name="is_fee_pay"/>
+                <field name="state"/>
+                <field name="patient_note"/>
+            </tree>
+        </field>
+    </record>
+    <record id="appointment_form_view_id" model="ir.ui.view">
+        <field name="name">appointment.form.view.id</field>
+        <field name="model">appointment.model</field>
+        <field name="arch" type="xml">
+            <form string="Appointment Details">
+                <header>
+                    <button name="action_fee_details_view"
+                            string="view Bill"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="is_fee_pay == False"/>
+                    <button name="%(hospital.action_report_patient_card)d"
+                            string="Print Patient Card"
+                            type="action"
+                            class="oe_highlight"/>
+                    <button name="%(hospital.action_report_patient_bill)d"
+                            string="Print Bill"
+                            type="action"
+                            class="oe_highlight"
+                            invisible="is_fee_pay == False"/>
+                </header>
+                <sheet>
+                    <group name="appointment_details">
+                        <group name="appointment_details_1">
+                            <field name="patient_id" placeholder="Patient's Name" widget="selection" class="oe_inline"/>
+                            <field name="doctor_id" placeholder="Doctor's Name" widget="selection" class="oe_inline"/>
+                            <field name="patient_note"
+                                   placeholder="Describe the patient symptoms here..."
+                                   widget="text"
+                                   style="width: 100%; padding: 5px; border: 1px solid;"/>
+                        </group>
+                        <group name="appointment_details_2">
+                            <field name="appointment_date" placeholder="xy/xx/xx" widget="date"/>
+                            <field name="state" widget="selection" class="oe_inline"/>
+                            <field name="doctor_fee" widget="input" class="oe_inline"/>
+                            <field name="is_fee_pay" widget="boolean" class="oe_inline"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="action_appointment_id" model="ir.actions.act_window">
+        <field name="name">Appointments</field>
+        <field name="res_model">appointment.model</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>
